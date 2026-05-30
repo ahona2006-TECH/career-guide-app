@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerPath BD — Your AI Career Guide</title>
+    <script src="https://unpkg.com/xrpl@2.7.0/build/xrpl-latest-min.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <div class="hero">
+        <h1>🎓 CareerPath BD</h1>
+        <p>Your personal career guide — from fresh graduate to top company</p>
+    </div>
+
+    <div class="container">
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('career')">🔍 Career Analysis</button>
+            <button class="tab" onclick="showTab('cv')">📄 CV Builder</button>
+            <button class="tab" onclick="showTab('companies')">🏢 Company Guides</button>
+            <button class="tab" onclick="showTab('roadmap')">🗺️ 6-Month Plan</button>
+            <button class="tab" onclick="showTab('passport')">🪪 Career Passport</button>
+        </div>
+
+        <!-- TAB 1: CAREER ANALYSIS -->
+        <div id="tab-career" class="tab-content active">
+            <h2>Tell us about yourself</h2>
+            <p class="hint">Fill in as much as you can. Even if you have no experience, we'll guide you.</p>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="name" placeholder="e.g. Rahul Ahmed" />
+            </div>
+            <div class="form-group">
+                <label>Educational Background</label>
+                <input type="text" id="education" placeholder="e.g. BSc in CSE, BUET / BBA, IBA DU" />
+            </div>
+            <div class="form-group">
+                <label>CGPA / Result</label>
+                <input type="text" id="cgpa" placeholder="e.g. 3.75 / 4.00" />
+            </div>
+            <div class="form-group">
+                <label>Your Skills</label>
+                <textarea id="skills" rows="3"
+                    placeholder="e.g. Python, Excel, Communication, Photoshop, SQL"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Experience (leave blank if none)</label>
+                <textarea id="experience" rows="3"
+                    placeholder="e.g. 3-month internship at a marketing agency"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Interests</label>
+                <textarea id="interests" rows="2" placeholder="e.g. Finance, Technology, Marketing, Design"></textarea>
+            </div>
+
+            <button class="btn-primary" onclick="analyzeProfile()">Analyze My Profile →</button>
+
+            <div id="loading" class="hidden loading-box">⏳ Analyzing your profile...</div>
+
+            <!-- RESULTS -->
+            <div id="results" class="hidden">
+
+                <div class="result-section">
+                    <h3>💪 Your Strengths</h3>
+                    <ul id="strengths-list"></ul>
+                </div>
+
+                <div class="result-section">
+                    <h3>⚠️ Skill Gaps to Fix</h3>
+                    <ul id="gaps-list"></ul>
+                </div>
+
+                <div class="result-section">
+                    <h3>🎯 Top Jobs for You</h3>
+                    <div id="jobs-list"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: CV BUILDER -->
+        <div id="tab-cv" class="tab-content hidden">
+            <h2>📄 Auto CV Builder</h2>
+            <p class="hint">Fill in your details and we'll generate a clean, professional CV instantly.</p>
+
+            <div class="form-group">
+                <label>Profile Photo (optional)</label>
+                <input type="file" id="cv-photo" accept="image/*" />
+            </div>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="cv-name" placeholder="Your full name" />
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="cv-email" placeholder="your@email.com" />
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="text" id="cv-phone" placeholder="+880 1XXX-XXXXXX" />
+            </div>
+            <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="cv-location" placeholder="e.g. Dhaka, Bangladesh" />
+            </div>
+            <div class="form-group">
+                <label>LinkedIn / Portfolio (optional)</label>
+                <input type="text" id="cv-linkedin" placeholder="e.g. linkedin.com/in/yourname" />
+            </div>
+            <div class="form-group">
+                <label>Education</label>
+                <input type="text" id="cv-education" placeholder="e.g. BSc in CSE, BUET — CGPA 3.75" />
+            </div>
+            <div class="form-group">
+                <label>Skills (comma separated)</label>
+                <input type="text" id="cv-skills" placeholder="Python, Excel, SQL, Communication" />
+            </div>
+            <div class="form-group">
+                <label>Experience (if any)</label>
+                <textarea id="cv-experience" rows="3"
+                    placeholder="e.g. Intern, XYZ Company, Jan–Mar 2024. Worked on..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Extracurricular / Achievements (optional)</label>
+                <textarea id="cv-extra" rows="2"
+                    placeholder="e.g. President, CSE Club BUET. Won national debate competition."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Career Objective (1–2 sentences)</label>
+                <textarea id="cv-objective" rows="2"
+                    placeholder="e.g. A motivated CSE graduate seeking a software engineering role..."></textarea>
+            </div>
+
+            <button class="btn-primary" onclick="buildCV()">Generate My CV →</button>
+
+            <!-- CV PREVIEW -->
+            <div id="cv-preview" class="hidden">
+                <div class="cv-actions">
+                    <button class="btn-secondary" onclick="printCV()">🖨️ Print / Save as PDF</button>
+                </div>
+                <div id="cv-output" class="cv-paper"></div>
+            </div>
+        </div>
+        <!-- TAB 4: 6-MONTH ROADMAP -->
+        <div id="tab-roadmap" class="tab-content hidden">
+            <h2>🗺️ Your 6-Month Hiring Roadmap</h2>
+            <p class="hint">This plan is personalized based on your profile from the Career Analysis tab. Fill that in
+                first if you haven't!</p>
+
+            <button class="btn-primary" onclick="generateRoadmap()">Generate My Roadmap →</button>
+
+            <div id="roadmap-output" class="hidden">
+                <div id="roadmap-cards"></div>
+            </div>
+        </div>
+        <!-- TAB 5: CAREER PASSPORT -->
+        <div id="tab-passport" class="tab-content hidden">
+            <div class="passport-hero">
+                <h2>🪪 Career Passport</h2>
+                <p class="hint">Your verified digital professional identity — owned by you, trusted by everyone.</p>
+            </div>
+
+            <!-- PASSPORT CARD -->
+            <div id="passport-card" class="passport-card hidden">
+
+                <div class="passport-top">
+                    <div class="passport-identity">
+                        <div class="passport-avatar" id="passport-avatar">👤</div>
+                        <div>
+                            <h2 id="passport-name">—</h2>
+                            <p id="passport-education">—</p>
+                            <p class="passport-id" id="passport-hash">🔗 Generating ID...</p>
+                        </div>
+                    </div>
+                    <div class="passport-status">
+                        <span class="passport-verified-badge">✅ Verified</span>
+                        <p class="passport-timestamp" id="passport-timestamp">—</p>
+                    </div>
+                </div>
+
+                <!-- CREDENTIAL SECTIONS -->
+                <div class="passport-credentials">
+
+                    <div class="credential-block" id="cred-roadmap">
+                        <div class="credential-icon">🗺️</div>
+                        <div class="credential-info">
+                            <h4>Roadmap Progress</h4>
+                            <p id="cred-roadmap-text">Not started</p>
+                        </div>
+                        <div class="credential-stamp" id="stamp-roadmap">⬜ Unverified</div>
+                    </div>
+
+                    <div class="credential-block" id="cred-skills">
+                        <div class="credential-icon">⚡</div>
+                        <div class="credential-info">
+                            <h4>Skill Badges</h4>
+                            <div id="cred-skills-tags" class="credential-tags"></div>
+                        </div>
+                        <div class="credential-stamp" id="stamp-skills">⬜ Unverified</div>
+                    </div>
+
+                    <div class="credential-block" id="cred-projects">
+                        <div class="credential-icon">💻</div>
+                        <div class="credential-info">
+                            <h4>Projects & Experience</h4>
+                            <p id="cred-projects-text">None added</p>
+                        </div>
+                        <div class="credential-stamp" id="stamp-projects">⬜ Unverified</div>
+                    </div>
+
+                    <div class="credential-block" id="cred-competition">
+                        <div class="credential-icon">🏆</div>
+                        <div class="credential-info">
+                            <h4>Competition Participation</h4>
+                            <p id="cred-competition-text">None recorded</p>
+                        </div>
+                        <div class="credential-stamp" id="stamp-competition">⬜ Unverified</div>
+                    </div>
+
+                    <div class="credential-block" id="cred-internship">
+                        <div class="credential-icon">🏢</div>
+                        <div class="credential-info">
+                            <h4>Internship / Work Proof</h4>
+                            <p id="cred-internship-text">None recorded</p>
+                        </div>
+                        <div class="credential-stamp" id="stamp-internship">⬜ Unverified</div>
+                    </div>
+
+                    <div class="credential-block" id="cred-endorsement">
+                        <div class="credential-icon">🤝</div>
+                        <div class="credential-info">
+                            <h4>Mentor Endorsements</h4>
+                            <p id="cred-endorsement-text">None yet</p>
+                        </div>
+                        <div class="credential-stamp" id="stamp-endorsement">⬜ Unverified</div>
+                    </div>
+
+                    <div class="credential-block" id="cred-hiring">
+                        <div class="credential-icon">📋</div>
+                        <div class="credential-info">
+                            <h4>Hiring Journey Progress</h4>
+                            <p id="cred-hiring-text">No tasks completed</p>
+                        </div>
+                        <div class="credential-stamp" id="stamp-hiring">⬜ Unverified</div>
+                    </div>
+
+                </div>
+
+                <!-- ADD CREDENTIALS FORM -->
+                <div class="passport-add-section">
+                    <h3>➕ Add & Verify Credentials</h3>
+
+                    <div class="form-group">
+                        <label>Competition Participated In</label>
+                        <input type="text" id="passport-competition" placeholder="e.g. NSU Innovation Challenge 2025" />
+                    </div>
+                    <div class="form-group">
+                        <label>Internship / Work Experience</label>
+                        <input type="text" id="passport-internship"
+                            placeholder="e.g. Software Intern, Brain Station 23, Jan–Mar 2025" />
+                    </div>
+                    <div class="form-group">
+                        <label>Mentor Endorsement</label>
+                        <input type="text" id="passport-endorsement"
+                            placeholder="e.g. Endorsed by Prof. Dr. Karim, BUET" />
+                    </div>
+                    <div class="form-group">
+                        <label>GitHub / Project Link</label>
+                        <input type="text" id="passport-github" placeholder="e.g. github.com/roshni/careerpathbd" />
+                    </div>
+
+                    <button class="btn-primary" onclick="stampPassport()">
+                        🔏 Stamp & Verify My Passport
+                    </button>
+                </div>
+
+                <!-- SHARE SECTION -->
+                <div class="passport-share hidden" id="passport-share">
+                    <h3>🌍 Share Your Passport</h3>
+                    <p>Your verified Career Passport ID:</p>
+                    <div class="passport-share-link" id="passport-share-link">—</div>
+                    <button class="btn-secondary" onclick="copyPassportLink()">📋 Copy Passport ID</button>
+                    <button class="btn-secondary" onclick="printPassport()">🖨️ Export Passport</button>
+                </div>
+
+            </div>
+
+            <!-- GENERATE BUTTON (shown before passport is created) -->
+            <div id="passport-generate-prompt">
+                <div class="passport-empty-state">
+                    <div class="empty-icon">🪪</div>
+                    <h3>Your Career Passport awaits</h3>
+                    <p>Fill in your profile in the Career Analysis tab first, then generate your passport here.</p>
+                    <button class="btn-primary" onclick="generatePassport()">
+                        Generate My Career Passport →
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <!-- TAB 3: COMPANY GUIDES -->
+        <div id="tab-companies" class="tab-content hidden">
+            <!-- Daily Task Banner -->
+            <div id="daily-banner" class="daily-banner hidden">
+                <span id="banner-text">📋 You have uncompleted tasks — keep going!</span>
+                <button onclick="document.getElementById('daily-banner').classList.add('hidden')">✕</button>
+            </div>
+
+            <h2>🏢 Company Recruitment Guides</h2>
+            <p class="hint">Click any company to see exactly how to get hired there.</p>
+
+            <div class="company-filter">
+                <button class="filter-btn active" onclick="filterCompanies('all')">All</button>
+                <button class="filter-btn" onclick="filterCompanies('local')">🇧🇩 Bangladesh</button>
+                <button class="filter-btn" onclick="filterCompanies('global')">🌍 Global</button>
+            </div>
+
+            <div id="company-cards"></div>
+        </div>
+
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
